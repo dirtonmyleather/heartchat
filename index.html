@@ -1234,7 +1234,7 @@ details.sec[open]>summary{margin-bottom:9px}
     </details>
     <details class="sec">
       <summary>메시지</summary>
-      <div class="tools"><button class="btn" id="sampleBtn">예시 다시 넣기</button><button class="btn" id="clearAll">모두 지우기</button></div>
+      <div class="tools"><button class="btn" id="clearAll">모두 지우기</button></div>
       <div class="rows" id="rows"></div>
       <div class="adds">
         <button class="btn" id="addRecv">+ 받는 메시지</button>
@@ -1291,7 +1291,7 @@ details.sec[open]>summary{margin-bottom:9px}
     </details>
     <details class="sec">
       <summary>상대</summary>
-      <div class="field"><label>이름</label><input type="text" id="pname"></div>
+      <div class="field"><label>이름</label><input type="text" id="pname" placeholder="예: 네무"></div>
       <div class="field"><label>프로필 사진</label>
         <div class="avrow"><div class="av" id="pav"></div>
           <button class="btn" id="pavBtn">사진 올리기</button>
@@ -1317,6 +1317,7 @@ details.sec[open]>summary{margin-bottom:9px}
 
 <script>
 /* ---------------- state ---------------- */
+const BLANK_START=true; // true면 처음 열 때 내용이 비어 있음 (깃허브 배포용)
 const DEF = {
   ratio:'4:5', mode:'both', read:true, input:true, trans:true,
   chatBg:'#fbf3f5', pageBg:'#ffffff', pname:'네무', pav:null,
@@ -1330,6 +1331,8 @@ const DEF = {
   ],
   prose:'화면 위로 이름이 떠오른 건 자정이 다 되어서였다. 리미는 한참 동안 알림을 내려다보기만 했다.\n\n답장을 보내면 또 같은 자리로 돌아가게 될 것 같았다.'
 };
+const EXAMPLE={rows:structuredClone(DEF.rows),prose:DEF.prose};
+if(BLANK_START){ Object.assign(DEF,{rows:[],prose:'',pname:'',crName:'',crBy:'',memoTitle:'',memoBody:'',memoDate:'',vidName:''}); }
 let S;
 let SAVED={}; try{ SAVED=JSON.parse(localStorage.getItem('heartchat-excerpt')||'{}')||{}; }catch(e){}
 try{ S = Object.assign(structuredClone(DEF), SAVED); }catch(e){ S = structuredClone(DEF); }
@@ -2259,7 +2262,6 @@ function initUI(){
   $('addRecv').onclick=()=>addRow('recv'); $('addSent').onclick=()=>addRow('sent');
   $('resetTypo').onclick=()=>{ for(const k of ['font','fontPt','pWeight','pAlign','lineP','paraPt','lsPt','padX','padY','pColor','hl1','hl2','hl3','bar1','bar2','dimParen']) S[k]=DEF[k]; typoUI(); syncRich(); update(); loadFonts().then(render); };
   $('clearAll').onclick=()=>{ S.rows=[]; rowsUI(); update(); };
-  $('sampleBtn').onclick=()=>{ S.rows=structuredClone(DEF.rows); S.prose=DEF.prose; $('prose').value=S.prose; rowsUI(); update(); toast('예시를 다시 넣었어요'); };
   chips(); rowsUI(); avUI(); typoUI();
 }
 
